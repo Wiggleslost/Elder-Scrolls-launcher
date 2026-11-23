@@ -1,0 +1,639 @@
+-- Elder Scrolls Game Launcher
+
+-- A cross-platform launcher for Elder Scrolls games
+
+function love.load()
+
+  -- Game data
+
+  games = {
+
+      {
+
+          id = 1,
+
+          title = "The Elder Scrolls: Arena",
+
+          year = 1994,
+
+          path = "",
+
+          description = "The original Elder Scrolls game that started it all.",
+
+          playtime = 0,
+
+          installed = false
+
+      },
+
+      {
+
+          id = 2,
+
+          title = "The Elder Scrolls II: Daggerfall",
+
+          year = 1996,
+
+          path = "",
+
+          description = "An epic fantasy RPG set in the province of Daggerfall.",
+
+          playtime = 0,
+
+          installed = false
+
+      },
+
+      {
+
+          id = 3,
+
+          title = "The Elder Scrolls III: Morrowind",
+
+          year = 2002,
+
+          path = "",
+
+          description = "Journey to the island of Vvardenfell and explore a vast alien world.",
+
+          playtime = 0,
+
+          installed = false
+
+      },
+
+      {
+
+          id = 4,
+
+          title = "The Elder Scrolls IV: Oblivion",
+
+          year = 2006,
+
+          path = "",
+
+          description = "An immersive first-person fantasy RPG set in Cyrodiil.",
+
+          playtime = 0,
+
+          installed = false
+
+      },
+
+      {
+
+          id = 5,
+
+          title = "The Elder Scrolls Online",
+
+          year = 2014,
+
+          path = "",
+
+          description = "An MMORPG set in the world of Tamriel.",
+
+          playtime = 0,
+
+          installed = false
+
+      },
+
+      {
+
+          id = 6,
+
+          title = "The Elder Scrolls V: Skyrim",
+
+          year = 2011,
+
+          path = "",
+
+          description = "An epic fantasy RPG set in the frozen province of Skyrim.",
+
+          playtime = 0,
+
+          installed = false
+
+      }
+
+  }
+
+  -- UI State
+
+  screenWidth = 1200
+
+  screenHeight = 800
+
+  selectedGame = 1
+
+  showSettings = false
+
+  scrollOffset = 0
+
+  -- Settings
+
+  settings = {
+
+      language = "English",
+
+      theme = "dark",
+
+      autoUpdate = true,
+
+      maxRecentGames = 10
+
+  }
+
+  -- Colors
+
+  colors = {
+
+      bg = {0.1, 0.1, 0.12},
+
+      primary = {0.2, 0.4, 0.8},
+
+      secondary = {0.3, 0.3, 0.35},
+
+      text = {0.9, 0.9, 0.9},
+
+      accent = {0.8, 0.5, 0.2},
+
+      highlight = {0.3, 0.6, 0.9}
+
+  }
+
+  love.window.setMode(screenWidth, screenHeight)
+
+  love.window.setTitle("Elder Scrolls Game Launcher")
+
+end
+
+function love.update(dt)
+
+  -- Update logic (e.g., detect key presses)
+
+end
+
+function love.draw()
+
+  -- Set background
+
+  love.graphics.setColor(colors.bg)
+
+  love.graphics.rectangle("fill", 0, 0, screenWidth, screenHeight)
+
+  if showSettings then
+
+      drawSettings()
+
+  else
+
+      drawLauncher()
+
+  end
+
+end
+
+function drawLauncher()
+
+  -- Header
+
+  love.graphics.setColor(colors.secondary)
+
+  love.graphics.rectangle("fill", 0, 0, screenWidth, 60)
+
+  love.graphics.setColor(colors.text)
+
+  love.graphics.setFont(love.graphics.newFont(24))
+
+  love.graphics.print("Elder Scrolls Game Launcher", 20, 15)
+
+  -- Settings button
+
+  drawButton(screenWidth - 120, 15, 100, 30, "Settings", function()
+
+      showSettings = not showSettings
+
+  end)
+
+  -- Main content area
+
+  local sidebarWidth = 300
+
+  -- Sidebar (Game List)
+
+  love.graphics.setColor(colors.secondary)
+
+  love.graphics.rectangle("fill", 0, 60, sidebarWidth, screenHeight - 60)
+
+  -- Game list
+
+  love.graphics.setColor(colors.text)
+
+  love.graphics.setFont(love.graphics.newFont(14))
+
+  local yOffset = 70
+
+  for i, game in ipairs(games) do
+
+      local isSelected = (i == selectedGame)
+
+      -- Highlight selected game
+
+      if isSelected then
+
+          love.graphics.setColor(colors.highlight)
+
+          love.graphics.rectangle("fill", 5, yOffset - 5, sidebarWidth - 10, 40)
+
+      end
+
+      love.graphics.setColor(colors.text)
+
+      love.graphics.print(game.title, 15, yOffset)
+
+      yOffset = yOffset + 50
+
+  end
+
+  -- Game details panel
+
+  love.graphics.setColor(colors.secondary)
+
+  love.graphics.rectangle("fill", sidebarWidth, 60, screenWidth - sidebarWidth, screenHeight - 60)
+
+  -- Display selected game details
+
+  local game = games[selectedGame]
+
+  love.graphics.setColor(colors.accent)
+
+  love.graphics.setFont(love.graphics.newFont(28))
+
+  love.graphics.print(game.title, sidebarWidth + 20, 80)
+
+  love.graphics.setColor(colors.text)
+
+  love.graphics.setFont(love.graphics.newFont(14))
+
+  love.graphics.print("Released: " .. game.year, sidebarWidth + 20, 130)
+
+  love.graphics.print("Status: " .. (game.installed and "Installed" or "Not Installed"), sidebarWidth + 20, 160)
+
+  love.graphics.print("Playtime: " .. game.playtime .. " hours", sidebarWidth + 20, 190)
+
+  love.graphics.setFont(love.graphics.newFont(12))
+
+  love.graphics.print("Description:", sidebarWidth + 20, 230)
+
+  -- Word wrap description
+
+  local maxWidth = screenWidth - sidebarWidth - 40
+
+  local wrappedText = wrapText(game.description, maxWidth, love.graphics.getFont())
+
+  love.graphics.print(wrappedText, sidebarWidth + 20, 260, maxWidth)
+
+  -- Action buttons
+
+  local buttonY = screenHeight - 120
+
+  local buttonWidth = 150
+
+  local buttonHeight = 40
+
+  local buttonSpacing = 20
+
+  if game.installed then
+
+      drawButton(sidebarWidth + 20, buttonY, buttonWidth, buttonHeight, "Play", function()
+
+          launchGame(game)
+
+      end)
+
+      drawButton(sidebarWidth + 20 + buttonWidth + buttonSpacing, buttonY, buttonWidth, buttonHeight, "Browse Files", function()
+
+          browseGameFiles(game)
+
+      end)
+
+  else
+
+      drawButton(sidebarWidth + 20, buttonY, buttonWidth, buttonHeight, "Browse", function()
+
+          browseForGamePath(game)
+
+      end)
+
+  end
+
+  drawButton(sidebarWidth + 20 + (buttonWidth + buttonSpacing) * 2, buttonY, buttonWidth, buttonHeight, "Remove", function()
+
+      removeGame(game)
+
+  end)
+
+end
+
+function drawSettings()
+
+  -- Header
+
+  love.graphics.setColor(colors.secondary)
+
+  love.graphics.rectangle("fill", 0, 0, screenWidth, 60)
+
+  love.graphics.setColor(colors.text)
+
+  love.graphics.setFont(love.graphics.newFont(24))
+
+  love.graphics.print("Settings", 20, 15)
+
+  -- Back button
+
+  drawButton(screenWidth - 120, 15, 100, 30, "Back", function()
+
+      showSettings = false
+
+  end)
+
+  -- Settings content
+
+  local contentX = 50
+
+  local contentY = 100
+
+  love.graphics.setColor(colors.text)
+
+  love.graphics.setFont(love.graphics.newFont(16))
+
+  love.graphics.print("Language:", contentX, contentY)
+
+  love.graphics.print(settings.language, contentX + 150, contentY)
+
+  contentY = contentY + 50
+
+  love.graphics.print("Theme:", contentX, contentY)
+
+  love.graphics.print(settings.theme, contentX + 150, contentY)
+
+  contentY = contentY + 50
+
+  love.graphics.print("Auto Update:", contentX, contentY)
+
+  love.graphics.print(settings.autoUpdate and "Enabled" or "Disabled", contentX + 150, contentY)
+
+  contentY = contentY + 50
+
+  drawButton(contentX, contentY, 150, 40, "Save Settings", function()
+
+      saveSettings()
+
+  end)
+
+end
+
+function drawButton(x, y, width, height, text, callback)
+
+  -- Button background
+
+  love.graphics.setColor(colors.primary)
+
+  love.graphics.rectangle("fill", x, y, width, height)
+
+  -- Button border
+
+  love.graphics.setColor(colors.accent)
+
+  love.graphics.rectangle("line", x, y, width, height)
+
+  -- Button text
+
+  love.graphics.setColor(colors.text)
+
+  love.graphics.setFont(love.graphics.newFont(12))
+
+  local textWidth = love.graphics.getFont():getWidth(text)
+
+  local textHeight = love.graphics.getFont():getHeight()
+
+  love.graphics.print(text, x + (width - textWidth) / 2, y + (height - textHeight) / 2)
+
+  -- Store button for click detection
+
+  if not buttons then buttons = {} end
+
+  table.insert(buttons, {x = x, y = y, width = width, height = height, callback = callback})
+
+end
+
+function wrapText(text, maxWidth, font)
+
+  local lines = {}
+
+  local line = ""
+
+  for word in text:gmatch("%S+") do
+
+      if font:getWidth(line .. word) > maxWidth then
+
+          table.insert(lines, line)
+
+          line = word
+
+      else
+
+          line = line == "" and word or line .. " " .. word
+
+      end
+
+  end
+
+  if line ~= "" then
+
+      table.insert(lines, line)
+
+  end
+
+  return table.concat(lines, "\n")
+
+end
+
+function launchGame(game)
+
+  if game.path == "" then return end
+
+  -- Cross-platform game launching
+
+  local cmd
+
+  if love.system.getOS() == "Windows" then
+
+      cmd = 'start "" "' .. game.path .. '"'
+
+  elseif love.system.getOS() == "Linux" then
+
+      cmd = game.path .. " &"
+
+  else -- macOS
+
+      cmd = 'open "' .. game.path .. '"'
+
+  end
+
+  os.execute(cmd)
+
+  game.playtime = game.playtime + 0.5 -- Increment playtime (simplified)
+
+end
+
+function browseGameFiles(game)
+
+  -- Cross-platform file browser
+
+  local cmd
+
+  if love.system.getOS() == "Windows" then
+
+      cmd = 'explorer "' .. game.path:match("(.*/?)") .. '"'
+
+  elseif love.system.getOS() == "Linux" then
+
+      cmd = 'xdg-open "' .. game.path:match("(.*/?)") .. '" &'
+
+  else -- macOS
+
+      cmd = 'open "' .. game.path:match("(.*/?)") .. '"'
+
+  end
+
+  os.execute(cmd)
+
+end
+
+function browseForGamePath(game)
+
+  -- This would ideally use a file browser dialog
+
+  -- For now, we'll display a message
+
+  print("Please select the game executable for: " .. game.title)
+
+  -- In a real implementation, use a native file dialog library
+
+end
+
+function removeGame(game)
+
+  game.installed = false
+
+  game.path = ""
+
+end
+
+function saveSettings()
+
+  -- Save settings to file
+
+  local settingsFile = io.open("settings.lua", "w")
+
+  settingsFile:write("return " .. serialize(settings))
+
+  settingsFile:close()
+
+end
+
+function serialize(t)
+
+  local str = "{"
+
+  for k, v in pairs(t) do
+
+      str = str .. k .. "="
+
+      if type(v) == "string" then
+
+          str = str .. '"' .. v .. '"'
+
+      else
+
+          str = str .. tostring(v)
+
+      end
+
+      str = str .. ", "
+
+  end
+
+  str = str .. "}"
+
+  return str
+
+end
+
+function love.mousepressed(x, y, button)
+
+  if button == 1 and buttons then
+
+      for _, btn in ipairs(buttons) do
+
+          if x >= btn.x and x <= btn.x + btn.width and
+
+             y >= btn.y and y <= btn.y + btn.height then
+
+              btn.callback()
+
+              buttons = {}
+
+              return
+
+          end
+
+      end
+
+  end
+
+  -- Select game from list
+
+  if not showSettings and x < 300 then
+
+      local gameIndex = math.floor((y - 70) / 50) + 1
+
+      if gameIndex >= 1 and gameIndex <= #games then
+
+          selectedGame = gameIndex
+
+      end
+
+  end
+
+  buttons = {}
+
+end
+
+function love.keypressed(key)
+
+  if key == "escape" then
+
+      if showSettings then
+
+          showSettings = false
+
+      else
+
+          love.event.quit()
+
+      end
+
+  elseif key == "up" and not showSettings then
+
+      selectedGame = math.max(1, selectedGame - 1)
+
+  elseif key == "down" and not showSettings then
+
+      selectedGame = math.min(#games, selectedGame + 1)
+
+  end
+
+end
