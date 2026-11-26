@@ -1,6 +1,6 @@
 # Elder Scrolls Library
 
-A lightweight browser-based launcher for Elder Scrolls games available on Microsoft. Browse the catalog, search or filter by era, and open a game's Steam launch link or store page.
+A lightweight browser-based launcher for Elder Scrolls games available on Microsoft. Browse the catalog, search or filter by era, and open a game's Microsoft launch link or store page.
 
 ## Run
 
