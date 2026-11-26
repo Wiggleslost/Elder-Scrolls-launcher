@@ -114,7 +114,23 @@ function love.load()
 
           installed = false
 
-      }
+      },
+
+      {
+
+          id = 7,
+
+          title = "The Elder Scrolls VI: Sentinel",
+
+          year = unknown,
+
+          path = "",
+
+          description = "No official description available yet",
+
+          playtime = 0,
+
+          installed = false
 
   }
 
