@@ -77,8 +77,8 @@ function renderGames() {
         <div class="game-meta"><span class="game-year">${game.year}</span><span class="game-tag">${game.label}</span></div>
         <h3>${game.title}</h3>
         <div class="card-actions">
-          <a class="launch-link" href="steam://run/${game.appId}" aria-label="Launch ${game.title} with Steam">
-            <span class="steam-symbol" aria-hidden="true">◉</span> Launch with Steam
+          <a class="launch-link" href="steam://run/${game.appId}" aria-label="Launch ${game.title} with Microsoft">
+            <span class="steam-symbol" aria-hidden="true">◉</span> Launch with Microsoft (App IDs in development)
           </a>
           <a class="store-link" href="https://store.steampowered.com/app/${game.appId}/" target="_blank" rel="noopener noreferrer">Store page ↗</a>
         </div>
