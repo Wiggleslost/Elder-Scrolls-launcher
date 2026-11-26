@@ -14,4 +14,4 @@ The domain owner must configure DNS, HTTPS, and hosting separately; this reposit
 
 ## Limitations
 
-This is a static launcher and does not install games, detect local installations, or connect to a Microsoft account. Launch links use Microsoft `ms-<app-id>` protocol, so Steam must be installed and the game must be in your library. The catalog currently includes Morrowind, Oblivion, Skyrim, Skyrim Special Edition, and The Elder Scrolls Online.
+This is a static launcher and does not install games, detect local installations, or connect to a Microsoft account. Launch links use Microsoft `ms-<app-id>` protocol, so Microsoft files must be installed and the game must be in your library. The catalog currently includes Morrowind, Oblivion, Skyrim, Skyrim Special Edition, and The Elder Scrolls Online.
